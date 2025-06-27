@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Suppress JavaDoc checks for test classes -->
+    <suppress checks="JavadocMethod|JavadocType|JavadocVariable" files=".*Test\.java"/>
+    <suppress checks="JavadocMethod|JavadocType|JavadocVariable" files=".*Tests\.java"/>
+    <suppress checks="JavadocMethod|JavadocType|JavadocVariable" files=".*IT\.java"/>
+    
+    <!-- Suppress MagicNumber for test classes -->
+    <suppress checks="MagicNumber" files=".*Test\.java"/>
+    <suppress checks="MagicNumber" files=".*Tests\.java"/>
+    <suppress checks="MagicNumber" files=".*IT\.java"/>
+    
+    <!-- Suppress DesignForExtension for Spring Boot applications -->
+    <suppress checks="DesignForExtension" files=".*Application\.java"/>
+    
+    <!-- Suppress HiddenField for DTOs/Entities with builder pattern -->
+    <suppress checks="HiddenField" files=".*Entity\.java"/>
+    <suppress checks="HiddenField" files=".*DTO\.java"/>
+    <suppress checks="HiddenField" files=".*Request\.java"/>
+    <suppress checks="HiddenField" files=".*Response\.java"/>
+    
+    <!-- Suppress FinalParameters for Spring controllers -->
+    <suppress checks="FinalParameters" files=".*Controller\.java"/>
+    <suppress checks="FinalParameters" files=".*RestController\.java"/>
+    
+    <!-- Suppress VisibilityModifier for entities with JPA annotations -->
+    <suppress checks="VisibilityModifier" files=".*Entity\.java"/>
+    
+    <!-- Suppress specific checks for generated files -->
+    <suppress checks=".*" files=".*[\\/]generated[\\/].*\.java"/>
+    <suppress checks=".*" files=".*[\\/]target[\\/].*\.java"/>
+    <suppress checks=".*" files=".*[\\/]build[\\/].*\.java"/>
+</suppressions> 

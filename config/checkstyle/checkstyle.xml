@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="error"/>
+    <property name="fileExtensions" value="java, properties, xml"/>
+
+    <!-- ========== FILE-LEVEL CHECKS ========== -->
+    
+    <!-- Prohibits tab characters - Forces use of spaces instead of tabs for consistent indentation -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+
+    <!-- Enforces maximum line length of 100 characters to match Google Java Format -->
+    <!-- Ignores package statements, imports, and URLs which can be longer -->
+    <module name="LineLength">
+        <property name="max" value="100"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- ========== NAMING CONVENTION CHECKS ========== -->
+        
+        <!-- Constants must use UPPER_SNAKE_CASE (e.g., MAX_SIZE, DEFAULT_TIMEOUT) -->
+        <module name="ConstantName"/>
+        
+        <!-- Final local variables must use lowerCamelCase (e.g., final String userName) -->
+        <module name="LocalFinalVariableName"/>
+        
+        <!-- Local variables must use lowerCamelCase (e.g., String userName, int count) -->
+        <module name="LocalVariableName"/>
+        
+        <!-- Class fields must use lowerCamelCase (e.g., private String firstName) -->
+        <module name="MemberName"/>
+        
+        <!-- Method names must use lowerCamelCase (e.g., getUserName(), calculateTotal()) -->
+        <module name="MethodName"/>
+        
+        <!-- Package names must be lowercase with dots (e.g., com.example.util) -->
+        <module name="PackageName"/>
+        
+        <!-- Method parameters must use lowerCamelCase (e.g., void setName(String userName)) -->
+        <module name="ParameterName"/>
+        
+        <!-- Static variables must use lowerCamelCase (e.g., private static String defaultName) -->
+        <module name="StaticVariableName"/>
+        
+        <!-- Class, interface, enum names must use UpperCamelCase (e.g., UserService, PaymentStatus) -->
+        <module name="TypeName"/>
+
+        <!-- ========== IMPORT MANAGEMENT ========== -->
+        
+        <!-- Prohibits wildcard imports (e.g., import java.util.*) - use specific imports instead -->
+        <module name="AvoidStarImport"/>
+        
+        <!-- Blocks imports from specific packages (e.g., sun.*, com.sun.* - internal APIs) -->
+        <module name="IllegalImport"/>
+        
+        <!-- Removes duplicate import statements -->
+        <module name="RedundantImport"/>
+        
+        <!-- Removes unused import statements to keep code clean -->
+        <module name="UnusedImports"/>
+
+        <!-- ========== SIZE LIMITATION CHECKS ========== -->
+        
+        <!-- Methods cannot exceed 50 lines to ensure maintainability and readability -->
+        <module name="MethodLength">
+            <property name="max" value="50"/>
+        </module>
+        
+        <!-- Methods cannot have more than 7 parameters - suggests method refactoring if exceeded -->
+        <module name="ParameterNumber">
+            <property name="max" value="7"/>
+        </module>
+
+        <!-- ========== WHITESPACE FORMATTING RULES ========== -->
+        
+        <!-- Ensures proper spacing in for loops: for (int i = 0; i < 10; i++) -->
+        <module name="EmptyForIteratorPad"/>
+        
+        <!-- Ensures proper spacing in generics: List<String> not List< String > -->
+        <module name="GenericWhitespace"/>
+        
+        <!-- Ensures no space between method name and parentheses: method() not method () -->
+        <module name="MethodParamPad"/>
+        
+        <!-- Ensures no space after certain tokens: array[0] not array [0] -->
+        <module name="NoWhitespaceAfter"/>
+        
+        <!-- Ensures no space before certain tokens: list.size() not list .size() -->
+        <module name="NoWhitespaceBefore"/>
+        
+        <!-- Controls line wrapping for operators (+ at end of line, not beginning) -->
+        <module name="OperatorWrap"/>
+        
+        <!-- Ensures no space inside parentheses: (expression) not ( expression ) -->
+        <module name="ParenPad"/>
+        
+        <!-- Ensures no space inside typecast parentheses: (String) obj not ( String ) obj -->
+        <module name="TypecastParenPad"/>
+        
+        <!-- Ensures space after keywords: if (, for (, while ( -->
+        <module name="WhitespaceAfter"/>
+        
+        <!-- Ensures space around operators: a = b + c not a=b+c -->
+        <module name="WhitespaceAround"/>
+
+        <!-- ========== MODIFIER ORDER CHECKS ========== -->
+        
+        <!-- Enforces standard modifier order: public static final, not static public final -->
+        <module name="ModifierOrder"/>
+        
+        <!-- Removes redundant modifiers (e.g., final in interface methods) -->
+        <module name="RedundantModifier"/>
+
+        <!-- ========== CODE BLOCK STRUCTURE ========== -->
+        
+        <!-- Prevents unnecessary nested blocks that don't add value -->
+        <module name="AvoidNestedBlocks"/>
+        
+        <!-- Prevents empty blocks or ensures they have comments explaining why they're empty -->
+        <module name="EmptyBlock"/>
+        
+        <!-- Enforces placement of opening braces: same line for methods, classes -->
+        <module name="LeftCurly"/>
+        
+        <!-- Requires braces for all control structures: if, for, while, do -->
+        <module name="NeedBraces"/>
+        
+        <!-- Enforces placement of closing braces -->
+        <module name="RightCurly"/>
+
+        <!-- ========== COMMON CODING PROBLEM PREVENTION ========== -->
+        
+        <!-- Prevents empty statements (standalone semicolons) -->
+        <module name="EmptyStatement"/>
+        
+        <!-- Ensures if equals() is overridden, then hashCode() is also overridden -->
+        <module name="EqualsHashCode"/>
+        
+        <!-- Prevents local variables from hiding class fields (with exceptions for constructors/setters) -->
+        <module name="HiddenField">
+            <property name="ignoreConstructorParameter" value="true"/>
+            <property name="ignoreSetter" value="true"/>
+        </module>
+        
+        <!-- Prevents direct instantiation of wrapper classes: use Boolean.valueOf() not new Boolean() -->
+        <module name="IllegalInstantiation"/>
+        
+        <!-- Prevents assignments within expressions: if (x = getValue()) should be if ((x = getValue()) != null) -->
+        <module name="InnerAssignment"/>
+        
+        <!-- Prevents magic numbers - use named constants instead of hardcoded values -->
+        <module name="MagicNumber"/>
+        
+        <!-- Ensures switch statements have a default case for completeness -->
+        <module name="MissingSwitchDefault"/>
+        
+        <!-- Simplifies boolean expressions: if (flag == true) should be if (flag) -->
+        <module name="SimplifyBooleanExpression"/>
+        
+        <!-- Simplifies boolean returns: return flag == true should be return flag -->
+        <module name="SimplifyBooleanReturn"/>
+
+        <!-- ========== CLASS DESIGN PRINCIPLES ========== -->
+        
+        <!-- Ensures methods are designed for extension (final, abstract, or empty) -->
+        <module name="DesignForExtension"/>
+        
+        <!-- Classes with only private constructors should be declared final -->
+        <module name="FinalClass"/>
+        
+        <!-- Utility classes should have private constructors to prevent instantiation -->
+        <module name="HideUtilityClassConstructor"/>
+        
+        <!-- Interfaces should define types, not just hold constants -->
+        <module name="InterfaceIsType"/>
+        
+        <!-- Class fields should be private (encapsulation principle) -->
+        <module name="VisibilityModifier"/>
+
+        <!-- ========== CODE STYLE MISCELLANEOUS ========== -->
+        
+        <!-- Array declarations: String[] args not String args[] -->
+        <module name="ArrayTypeStyle"/>
+        
+        <!-- Method parameters should be final to prevent accidental modification -->
+        <module name="FinalParameters"/>
+        
+        <!-- Warns about TODO comments that might need attention -->
+        <module name="TodoComment"/>
+        
+        <!-- Long literals should use uppercase L: 123L not 123l (avoids confusion with 1) -->
+        <module name="UpperEll"/>
+
+        <!-- ========== ANNOTATION FORMATTING ========== -->
+        
+        <!-- Ensures annotations are placed correctly (usually on separate lines) -->
+        <module name="AnnotationLocation"/>
+        
+        <!-- Enforces consistent annotation style and formatting -->
+        <module name="AnnotationUseStyle"/>
+        
+        <!-- Ensures @Override annotation is used when overriding methods -->
+        <module name="MissingOverride"/>
+        
+        <!-- Package annotations should be in package-info.java files -->
+        <module name="PackageAnnotation"/>
+        
+        <!-- Ensures proper usage of @SuppressWarnings annotation -->
+        <module name="SuppressWarnings"/>
+
+        <!-- ========== JAVADOC DOCUMENTATION REQUIREMENTS ========== -->
+        
+        <!-- Public methods must have Javadoc documentation -->
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+        </module>
+        
+        <!-- All classes and interfaces must have Javadoc documentation -->
+        <module name="JavadocType"/>
+        
+        <!-- Public fields must have Javadoc documentation -->
+        <module name="JavadocVariable">
+            <property name="scope" value="public"/>
+        </module>
+        
+        <!-- Ensures Javadoc follows proper formatting and style -->
+        <module name="JavadocStyle"/>
+
+        <!-- ========== SECURITY AND BEST PRACTICES ========== -->
+        
+        <!-- Prohibits imports from internal JDK packages (sun.*, com.sun.*) for security and portability -->
+        <module name="IllegalImport">
+            <property name="illegalPkgs" value="sun, com.sun"/>
+        </module>
+    </module>
+
+    <!-- ========== SUPPRESSION CONFIGURATION ========== -->
+    
+    <!-- Allows suppression of specific checks for certain files/patterns -->
+    <!-- Configuration is in checkstyle-suppressions.xml -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
+        <property name="optional" value="true"/>
+    </module>
+
+</module> 
