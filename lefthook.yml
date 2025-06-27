@@ -110,16 +110,17 @@ pre-push:
         echo "✅ Branch name follows convention: $BRANCH"
 
 commit-msg:
-  commands:
+  scripts:
     # Validate commit message format
-    conventional-commit:
+    "conventional-commit":
+      runner: bash
       tags: git
-      run: |
+      script: |
         # Read commit message
-        MSG=$(cat {1})
+        MSG=$(cat "$1")
 
         # Check conventional commit format
-        if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\\(.+\\))?: .{1,50}"; then
+        if ! echo "$MSG" | grep -qE '^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\([^)]+\))?: .{1,50}'; then
           echo "❌ Commit message does not follow Conventional Commits format!"
           echo ""
           echo "Expected format:"

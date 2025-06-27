@@ -72,6 +72,37 @@ lefthook install
 **⚠️ Windows Users with nvm4w:**
 If you're using nvm4w (Node Version Manager for Windows), npm installs lefthook as `lefthook.cmd` and `lefthook.ps1` files. Git hooks may not find these automatically. The project includes a fix for this - just run `./gradlew setupHooks` and it will handle the PATH issue automatically.
 
+### Windows Setup Details
+
+**The Problem**: On Windows with nvm4w, npm installs create `lefthook.cmd` files, but Git hooks look for `lefthook.exe` or `lefthook.bat`. This causes "Can't find lefthook in PATH" errors.
+
+**Our Solution**: We use the `LEFTHOOK_BIN` environment variable (standard solution recommended by the lefthook community).
+
+**Automatic Setup (Recommended):**
+```bash
+# 1. Install lefthook via npm
+npm install -g @evilmartians/lefthook@latest
+
+# 2. Run our automated setup (detects Windows + nvm4w automatically)
+./gradlew setupHooks
+```
+
+**Manual Setup (if needed for running lefthook outside Gradle):**
+```powershell
+# PowerShell
+$env:LEFTHOOK_BIN = "C:/nvm4w/nodejs/lefthook.cmd"
+
+# Command Prompt
+set LEFTHOOK_BIN=C:\nvm4w\nodejs\lefthook.cmd
+```
+
+**Verification:**
+```bash
+# Test that everything works
+git add .
+git commit -m "test: verify lefthook setup"
+```
+
 ## 📋 Available Commands
 
 ### Setup
@@ -262,30 +293,49 @@ winget install evilmartians.lefthook  # Windows (alternative)
 
 **nvm4w users getting "Can't find lefthook in PATH":**
 ```bash
-# Check which files were installed
+# 1. Verify lefthook is installed
+npm list -g @evilmartians/lefthook
+
+# 2. Check which files were installed
 dir C:\nvm4w\nodejs\lefthook*
-
 # You should see: lefthook, lefthook.cmd, lefthook.ps1
-# The project's Gradle setupHooks task automatically handles this
 
-# Verify the fix worked
+# 3. Re-run our automated setup
 ./gradlew setupHooks
+
+# 4. Test the fix
+git add .
 git commit -m "test: verify hooks are working"
 ```
 
-**Alternative Windows solutions if PATH issues persist:**
+**Different nvm4w installation path:**
+If your nvm4w is installed in a different location, update the path in `build.gradle`:
+```gradle
+def lefthookPath = 'C:\\your\\custom\\path\\lefthook.cmd'
+```
+
+**Alternative Windows solutions if issues persist:**
 ```bash
-# Option 1: Add npm global bin to Windows PATH
+# Option 1: Set environment variable permanently
+# Add LEFTHOOK_BIN=C:\nvm4w\nodejs\lefthook.cmd to Windows environment variables
+
+# Option 2: Add npm global bin to Windows PATH
 # 1. Run: npm config get prefix
 # 2. Add that directory to Windows PATH environment variable
 # 3. Restart terminal
 
-# Option 2: Use full path in environment variable
-set LEFTHOOK_BIN=C:\nvm4w\nodejs\lefthook.cmd
-
 # Option 3: Install via package manager instead of npm
 scoop install lefthook
+choco install lefthook
+winget install evilmartians.lefthook
 ```
+
+**Why our solution is better:**
+- ✅ **Standard practice** - Uses lefthook's built-in `LEFTHOOK_BIN` support
+- ✅ **Team-friendly** - Automatically configured for all developers
+- ✅ **Version-controlled** - Setup is in `build.gradle`
+- ✅ **Portable** - Works across different Windows setups
+- ✅ **Future-proof** - Won't break with lefthook updates
 
 **Performance issues:**
 - Pre-commit hooks now run sequentially for better reliability
