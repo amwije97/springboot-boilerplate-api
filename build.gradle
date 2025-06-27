@@ -15,6 +15,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'checkstyle'
 	id 'com.diffplug.spotless' version '6.25.0'
+
 }
 
 group = 'com.example'
@@ -54,7 +55,7 @@ spotless {
 		importOrder('java', 'javax', 'org', 'com', '')
 		formatAnnotations()
 	}
-	
+
 	// Format build files
 	groovyGradle {
 		target '**/*.gradle'
@@ -63,7 +64,7 @@ spotless {
 		trimTrailingWhitespace()
 		endWithNewline()
 	}
-	
+
 	// Format other files
 	format 'misc', {
 		target '**/*.md', '**/*.yml', '**/*.yaml', '**/*.properties'
@@ -76,6 +77,7 @@ spotless {
 checkstyle {
 	toolVersion = '10.12.5'
 	configFile = file('config/checkstyle/checkstyle.xml')
+	configDirectory = file('config/checkstyle')
 	configProperties = [
 		'checkstyle.cache.file': "${buildDir}/checkstyle.cache"
 	]
@@ -97,19 +99,19 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+
+
 // ========== GIT HOOKS SETUP TASK ==========
 
 task setupHooks(type: Exec) {
 	group = 'setup'
 	description = 'Setup Git hooks with Lefthook for code quality automation'
-	
-	// Check if Lefthook is installed, if not provide helpful error message
+
 	doFirst {
 		try {
-			// Windows-compatible command execution
 			if (System.getProperty('os.name').toLowerCase().contains('windows')) {
 				exec {
-					commandLine 'cmd', '/c', 'lefthook', 'version'
+					commandLine 'C:\\nvm4w\\nodejs\\lefthook.cmd', 'version'
 					standardOutput = new ByteArrayOutputStream()
 				}
 			} else {
@@ -120,47 +122,19 @@ task setupHooks(type: Exec) {
 			}
 			println '🔧 Setting up Git hooks with Lefthook...'
 		} catch (Exception e) {
-			// Try npx as fallback for Windows
-			try {
-				if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-					exec {
-						commandLine 'cmd', '/c', 'npx', 'lefthook', 'version'
-						standardOutput = new ByteArrayOutputStream()
-					}
-				} else {
-					exec {
-						commandLine 'npx', 'lefthook', 'version'
-						standardOutput = new ByteArrayOutputStream()
-					}
-				}
-				println '🔧 Setting up Git hooks with Lefthook (via npx)...'
-			} catch (Exception e2) {
-				throw new GradleException(
-					'❌ Lefthook is not installed or not accessible!\n\n' +
-					'Please try one of these installation methods:\n\n' +
-					'Via npm (global - recommended):\n' +
-					'  npm install -g @evilmartians/lefthook@latest\n\n' +
-					'Via npm (local - if global fails):\n' +
-					'  npm install lefthook --save-dev\n\n' +
-					'Alternative Windows methods:\n' +
-					'  scoop install lefthook\n' +
-					'  winget install evilmartians.lefthook\n\n' +
-					'Then run: ./gradlew setupHooks\n\n' +
-					'Debug info:\n' +
-					'  First attempt error: ' + e.message + '\n' +
-					'  NPX fallback error: ' + e2.message
-				)
-			}
+			throw new GradleException(
+			'❌ Lefthook is not accessible!\n\n' +
+			'Error: ' + e.message
+			)
 		}
 	}
-	
-	// Install the Git hooks - Windows compatible
+
 	if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-		commandLine 'cmd', '/c', 'lefthook', 'install'
+		commandLine 'C:\\nvm4w\\nodejs\\lefthook.cmd', 'install'
 	} else {
 		commandLine 'lefthook', 'install'
 	}
-	
+
 	doLast {
 		println '✅ Git hooks setup complete!\n'
 		println 'Your project now has the following automated checks:'
@@ -179,6 +153,6 @@ task setupHooks(type: Exec) {
 }
 
 wrapper {
-    gradleVersion = '8.15'
-    distributionType = Wrapper.DistributionType.ALL
+	gradleVersion = '8.15'
+	distributionType = Wrapper.DistributionType.ALL
 }
