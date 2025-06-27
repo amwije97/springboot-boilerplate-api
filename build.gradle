@@ -15,7 +15,6 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'checkstyle'
 	id 'com.diffplug.spotless' version '6.25.0'
-
 }
 
 group = 'com.example'
@@ -167,7 +166,7 @@ task setupHooks(type: Exec) {
 		println '📝 Pre-commit:  Code formatting, linting, unit tests'
 		println '🚀 Pre-push:    Full test suite, build verification'
 		println '💬 Commit-msg:  Conventional commit format validation\n'
-		
+
 		if (System.getProperty('os.name').toLowerCase().contains('windows')) {
 			def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
 			if (new File(lefthookPath).exists()) {
@@ -177,7 +176,7 @@ task setupHooks(type: Exec) {
 				println '   or add it to your environment variables permanently\n'
 			}
 		}
-		
+
 		println 'Available commands:'
 		println '  ./gradlew setupHooks           - Setup/reinstall Git hooks'
 		println '  lefthook run pre-commit        - Run pre-commit hooks manually'

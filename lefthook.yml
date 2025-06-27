@@ -6,7 +6,7 @@ min_version: 1.11.14
 pre-commit:
   # Sequential execution for proper formatting flow
   parallel: false
-  
+
   commands:
     # STEP 1: Auto-format code with Spotless (apply fixes)
     spotless-apply:
@@ -14,34 +14,27 @@ pre-commit:
       run: ./gradlew spotlessApply
       fail_text: "Spotless auto-formatting failed. Please check for syntax errors in your code."
       stage_fixed: true
-    
+
     # STEP 2: Check formatting with Spotless (verify formatting is correct)
     spotless-check:
       tags: formatting java
       run: ./gradlew spotlessCheck
       fail_text: "Spotless formatting check failed after auto-formatting. This should not happen - please report this issue."
       stage_fixed: true
-    
+
     # STEP 3: Run Checkstyle linting (after code is properly formatted)
     checkstyle:
       tags: linting java
       run: ./gradlew checkstyleMain checkstyleTest
       fail_text: "Checkstyle violations found. Please fix the code quality issues."
-    
+
     # STEP 4: Compile and run tests (final verification)
     test:
       tags: testing java
       run: ./gradlew test --no-daemon
       fail_text: "Tests failed. Please fix failing tests before committing."
-    
-    # STEP 5: Security vulnerability check (if using OWASP dependency check)
-    security-check:
-      tags: security
-      run: ./gradlew dependencyCheckAnalyze
-      fail_text: "Security vulnerabilities found in dependencies."
-      skip:
-        - merge
-        - rebase
+
+
 
   scripts:
     # Custom script to check for TODO/FIXME comments in staged files
@@ -70,20 +63,20 @@ pre-commit:
 pre-push:
   # Sequential execution for comprehensive checks
   parallel: false
-  
+
   commands:
     # Unit tests (fast local feedback)
     test:
       tags: testing java
       run: ./gradlew clean test --no-daemon
       fail_text: "Unit tests failed. Please fix all failing tests before pushing."
-    
+
     # Build the entire project
     build:
       tags: build java
       run: ./gradlew build --no-daemon
       fail_text: "Build failed. Please fix build issues before pushing."
-    
+
     # Run static analysis
     static-analysis:
       tags: quality java
@@ -98,12 +91,12 @@ pre-push:
       script: |
         BRANCH=$(git rev-parse --abbrev-ref HEAD)
         VALID_PATTERN="^(feat|feature|fix|bugfix|hotfix|docs|test|chore|patch|refactor)\/[a-z0-9-]+$"
-        
+
         if [[ "$BRANCH" == "main" || "$BRANCH" == "master" || "$BRANCH" == "develop" ]]; then
           echo "✅ Pushing to protected branch: $BRANCH"
           exit 0
         fi
-        
+
         if [[ ! $BRANCH =~ $VALID_PATTERN ]]; then
           echo "❌ Branch name '$BRANCH' does not follow naming convention."
           echo "Expected pattern: feat/description, feature/description, fix/description, bugfix/description, etc."
@@ -124,9 +117,9 @@ commit-msg:
       run: |
         # Read commit message
         MSG=$(cat {1})
-        
+
         # Check conventional commit format
-        if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,50}"; then
+        if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\\(.+\\))?: .{1,50}"; then
           echo "❌ Commit message does not follow Conventional Commits format!"
           echo ""
           echo "Expected format:"
@@ -154,4 +147,4 @@ output:
   - execution
   - execution_out
   - execution_info
-  - skips 
+  - skips

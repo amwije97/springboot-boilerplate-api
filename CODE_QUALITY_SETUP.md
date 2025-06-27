@@ -55,13 +55,22 @@ npm install -g @evilmartians/lefthook@latest
 # macOS
 brew install lefthook
 
-# Windows (with Scoop)
+# Windows (with Scoop) - Recommended for Windows
 scoop install lefthook
+
+# Windows (with Chocolatey)
+choco install lefthook
+
+# Windows (with Winget)
+winget install evilmartians.lefthook
 
 # Manual installation
 npm install -g @evilmartians/lefthook@latest
 lefthook install
 ```
+
+**⚠️ Windows Users with nvm4w:**
+If you're using nvm4w (Node Version Manager for Windows), npm installs lefthook as `lefthook.cmd` and `lefthook.ps1` files. Git hooks may not find these automatically. The project includes a fix for this - just run `./gradlew setupHooks` and it will handle the PATH issue automatically.
 
 ## 📋 Available Commands
 
@@ -241,16 +250,53 @@ npm install -g @evilmartians/lefthook@latest
 
 # Or use alternative package managers
 brew install lefthook          # macOS
-scoop install lefthook         # Windows
+scoop install lefthook         # Windows (recommended)
+choco install lefthook         # Windows (alternative)
+winget install evilmartians.lefthook  # Windows (alternative)
 
 # Then setup hooks
 ./gradlew setupHooks
+```
+
+**Windows-specific issues:**
+
+**nvm4w users getting "Can't find lefthook in PATH":**
+```bash
+# Check which files were installed
+dir C:\nvm4w\nodejs\lefthook*
+
+# You should see: lefthook, lefthook.cmd, lefthook.ps1
+# The project's Gradle setupHooks task automatically handles this
+
+# Verify the fix worked
+./gradlew setupHooks
+git commit -m "test: verify hooks are working"
+```
+
+**Alternative Windows solutions if PATH issues persist:**
+```bash
+# Option 1: Add npm global bin to Windows PATH
+# 1. Run: npm config get prefix
+# 2. Add that directory to Windows PATH environment variable
+# 3. Restart terminal
+
+# Option 2: Use full path in environment variable
+set LEFTHOOK_BIN=C:\nvm4w\nodejs\lefthook.cmd
+
+# Option 3: Install via package manager instead of npm
+scoop install lefthook
 ```
 
 **Performance issues:**
 - Pre-commit hooks now run sequentially for better reliability
 - Use `--no-daemon` flag for Gradle in CI environments
 - Consider skipping hooks in emergency situations with `--no-verify`
+
+**Windows + nvm4w specific notes:**
+- The project automatically detects Windows with nvm4w and uses the correct `lefthook.cmd` path
+- If you see "Can't find lefthook in PATH" errors, run `./gradlew setupHooks` to apply the fix
+- Git hooks have been patched to use the full path: `C:/nvm4w/nodejs/lefthook.cmd`
+- This ensures compatibility regardless of Windows PATH configuration
 
 ### Disabling Checks (Use Sparingly)
 
@@ -288,6 +334,25 @@ The setup enforces these quality standards:
 4. Add tests for new functionality
 5. Update documentation as needed
 
+## 🔧 Technical Implementation Notes
+
+### Windows Compatibility Fix
+The project includes automatic handling for Windows users with nvm4w:
+
+**Issue**: npm with nvm4w installs lefthook as:
+- `lefthook` (Unix shell script)
+- `lefthook.cmd` (Windows batch file)
+- `lefthook.ps1` (PowerShell script)
+
+Git hooks look for `lefthook.exe` and `lefthook.bat` but not `lefthook.cmd`.
+
+**Solution**: The setupHooks Gradle task and Git hooks are configured to use the full path to `lefthook.cmd` on Windows systems, ensuring reliable execution regardless of PATH configuration.
+
+### Configuration Files
+- **lefthook.yml**: min_version set to 1.11.14 for latest features
+- **build.gradle**: setupHooks task with Windows detection
+- **.git/hooks/**: Patched hook files with full path resolution
+
 ## 📚 Additional Resources
 
 - [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
@@ -295,7 +360,8 @@ The setup enforces these quality standards:
 - [Spotless Documentation](https://github.com/diffplug/spotless)
 - [Lefthook Documentation](https://github.com/evilmartians/lefthook)
 - [Conventional Commits](https://www.conventionalcommits.org/)
+- [nvm4w (Node Version Manager for Windows)](https://github.com/coreybutler/nvm-windows)
 
 ---
 
-*This setup ensures consistent, high-quality code across the entire development team. 🎯* 
+*This setup ensures consistent, high-quality code across the entire development team. 🎯*

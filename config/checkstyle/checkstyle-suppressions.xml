@@ -17,6 +17,9 @@
     <!-- Suppress DesignForExtension for Spring Boot applications -->
     <suppress checks="DesignForExtension" files=".*Application\.java"/>
     
+    <!-- Suppress FinalClass for Spring Boot application classes -->
+    <suppress checks="FinalClass" files=".*Application\.java"/>
+    
     <!-- Suppress HiddenField for DTOs/Entities with builder pattern -->
     <suppress checks="HiddenField" files=".*Entity\.java"/>
     <suppress checks="HiddenField" files=".*DTO\.java"/>

@@ -6,8 +6,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringbootBoilerplateApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringbootBoilerplateApiApplication.class, args);
-	}
+    /** Private constructor to prevent instantiation of this utility class. */
+    private SpringbootBoilerplateApiApplication() {
+        // Private constructor for utility class
+    }
 
+    public static void main(final String[] args) {
+        SpringApplication.run(SpringbootBoilerplateApiApplication.class, args);
+    }
 }
