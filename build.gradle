@@ -108,11 +108,28 @@ task setupHooks(type: Exec) {
 	description = 'Setup Git hooks with Lefthook for code quality automation'
 
 	doFirst {
+		// Configure LEFTHOOK_BIN for Windows with nvm4w (standard solution)
+		if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+			def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
+			if (new File(lefthookPath).exists()) {
+				environment 'LEFTHOOK_BIN', lefthookPath
+				println '🔧 Detected Windows with nvm4w - using LEFTHOOK_BIN environment variable'
+			}
+		}
+
 		try {
 			if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-				exec {
-					commandLine 'C:\\nvm4w\\nodejs\\lefthook.cmd', 'version'
-					standardOutput = new ByteArrayOutputStream()
+				def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
+				if (new File(lefthookPath).exists()) {
+					exec {
+						commandLine lefthookPath, 'version'
+						standardOutput = new ByteArrayOutputStream()
+					}
+				} else {
+					exec {
+						commandLine 'lefthook', 'version'
+						standardOutput = new ByteArrayOutputStream()
+					}
 				}
 			} else {
 				exec {
@@ -124,13 +141,22 @@ task setupHooks(type: Exec) {
 		} catch (Exception e) {
 			throw new GradleException(
 			'❌ Lefthook is not accessible!\n\n' +
+			'Windows users with nvm4w: Make sure lefthook is installed via npm\n' +
+			'Run: npm install -g @evilmartians/lefthook@latest\n\n' +
 			'Error: ' + e.message
 			)
 		}
 	}
 
+	// Set LEFTHOOK_BIN environment variable for the install command
 	if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-		commandLine 'C:\\nvm4w\\nodejs\\lefthook.cmd', 'install'
+		def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
+		if (new File(lefthookPath).exists()) {
+			environment 'LEFTHOOK_BIN', lefthookPath
+			commandLine lefthookPath, 'install'
+		} else {
+			commandLine 'lefthook', 'install'
+		}
 	} else {
 		commandLine 'lefthook', 'install'
 	}
@@ -141,6 +167,17 @@ task setupHooks(type: Exec) {
 		println '📝 Pre-commit:  Code formatting, linting, unit tests'
 		println '🚀 Pre-push:    Full test suite, build verification'
 		println '💬 Commit-msg:  Conventional commit format validation\n'
+		
+		if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+			def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
+			if (new File(lefthookPath).exists()) {
+				println '🪟 Windows Setup: LEFTHOOK_BIN configured automatically'
+				println '   If you need to run lefthook manually, use:'
+				println '   set LEFTHOOK_BIN=C:\\nvm4w\\nodejs\\lefthook.cmd'
+				println '   or add it to your environment variables permanently\n'
+			}
+		}
+		
 		println 'Available commands:'
 		println '  ./gradlew setupHooks           - Setup/reinstall Git hooks'
 		println '  lefthook run pre-commit        - Run pre-commit hooks manually'
