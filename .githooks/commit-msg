@@ -1,0 +1,39 @@
+#!/bin/bash
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}🔍 Validating commit message format...${NC}"
+
+# Read commit message from file
+MSG_FILE="$1"
+MSG=$(cat "$MSG_FILE")
+
+# Check conventional commit format
+CONVENTIONAL_COMMIT_REGEX='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\([^)]+\))?: .{1,50}'
+
+if ! echo "$MSG" | grep -qE "$CONVENTIONAL_COMMIT_REGEX"; then
+    echo -e "${RED}❌ Commit message does not follow Conventional Commits format!${NC}"
+    echo ""
+    echo "Expected format:"
+    echo "  type(scope): description"
+    echo "  or"
+    echo "  type: description"
+    echo ""
+    echo "Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+    echo "Examples:"
+    echo "  feat: add user login functionality"
+    echo "  feat(auth): add user login functionality"
+    echo "  fix: resolve null pointer exception in user service"
+    echo "  fix(api): resolve null pointer exception in user service"
+    echo ""
+    echo "Your message: $MSG"
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Commit message follows Conventional Commits format${NC}"
+exit 0 

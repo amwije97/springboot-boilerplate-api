@@ -14,7 +14,6 @@ plugins {
 	id 'org.springframework.boot' version '3.5.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'checkstyle'
-	id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'com.example'
@@ -43,35 +42,6 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// Spotless configuration for auto-formatting
-spotless {
-	java {
-		target '**/*.java'
-		googleJavaFormat('1.27.0').aosp().reflowLongStrings()
-		removeUnusedImports()
-		trimTrailingWhitespace()
-		endWithNewline()
-		importOrder('java', 'javax', 'org', 'com', '')
-		formatAnnotations()
-	}
-
-	// Format build files
-	groovyGradle {
-		target '**/*.gradle'
-		greclipse()
-		indentWithTabs()
-		trimTrailingWhitespace()
-		endWithNewline()
-	}
-
-	// Format other files
-	format 'misc', {
-		target '**/*.md', '**/*.yml', '**/*.yaml', '**/*.properties'
-		trimTrailingWhitespace()
-		endWithNewline()
-	}
-}
-
 // Checkstyle configuration for code linting
 checkstyle {
 	toolVersion = '10.12.5'
@@ -98,95 +68,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// ========== GIT HOOKS SETUP ==========
+// Apply git hooks installation script
+apply from: 'gradle/install-git-hooks.gradle'
 
-
-// ========== GIT HOOKS SETUP TASK ==========
-
-task setupHooks(type: Exec) {
-	group = 'setup'
-	description = 'Setup Git hooks with Lefthook for code quality automation'
-
-	doFirst {
-		// Configure LEFTHOOK_BIN for Windows with nvm4w (standard solution)
-		if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-			def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
-			if (new File(lefthookPath).exists()) {
-				environment 'LEFTHOOK_BIN', lefthookPath
-				println '🔧 Detected Windows with nvm4w - using LEFTHOOK_BIN environment variable'
-			}
-		}
-
-		try {
-			if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-				def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
-				if (new File(lefthookPath).exists()) {
-					exec {
-						commandLine lefthookPath, 'version'
-						standardOutput = new ByteArrayOutputStream()
-					}
-				} else {
-					exec {
-						commandLine 'lefthook', 'version'
-						standardOutput = new ByteArrayOutputStream()
-					}
-				}
-			} else {
-				exec {
-					commandLine 'lefthook', 'version'
-					standardOutput = new ByteArrayOutputStream()
-				}
-			}
-			println '🔧 Setting up Git hooks with Lefthook...'
-		} catch (Exception e) {
-			throw new GradleException(
-			'❌ Lefthook is not accessible!\n\n' +
-			'Windows users with nvm4w: Make sure lefthook is installed via npm\n' +
-			'Run: npm install -g @evilmartians/lefthook@latest\n\n' +
-			'Error: ' + e.message
-			)
-		}
-	}
-
-	// Set LEFTHOOK_BIN environment variable for the install command
-	if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-		def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
-		if (new File(lefthookPath).exists()) {
-			environment 'LEFTHOOK_BIN', lefthookPath
-			commandLine lefthookPath, 'install'
-		} else {
-			commandLine 'lefthook', 'install'
-		}
-	} else {
-		commandLine 'lefthook', 'install'
-	}
-
-	doLast {
-		println '✅ Git hooks setup complete!\n'
-		println 'Your project now has the following automated checks:'
-		println '📝 Pre-commit:  Code formatting, linting, unit tests'
-		println '🚀 Pre-push:    Full test suite, build verification'
-		println '💬 Commit-msg:  Conventional commit format validation\n'
-
-		if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-			def lefthookPath = 'C:\\nvm4w\\nodejs\\lefthook.cmd'
-			if (new File(lefthookPath).exists()) {
-				println '🪟 Windows Setup: LEFTHOOK_BIN configured automatically'
-				println '   If you need to run lefthook manually, use:'
-				println '   set LEFTHOOK_BIN=C:\\nvm4w\\nodejs\\lefthook.cmd'
-				println '   or add it to your environment variables permanently\n'
-			}
-		}
-
-		println 'Available commands:'
-		println '  ./gradlew setupHooks           - Setup/reinstall Git hooks'
-		println '  lefthook run pre-commit        - Run pre-commit hooks manually'
-		println '  lefthook run pre-push          - Run pre-push hooks manually'
-		println '  ./gradlew spotlessApply        - Auto-format code'
-		println '  ./gradlew checkstyleMain       - Run code quality checks'
-		println '  ./gradlew test                 - Run tests\n'
-		println 'Happy coding! 🎉'
-	}
-}
+// Ensure hooks are installed during build
+build.dependsOn installGitHooks
 
 wrapper {
 	gradleVersion = '8.15'

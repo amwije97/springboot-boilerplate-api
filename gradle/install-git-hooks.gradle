@@ -1,0 +1,31 @@
+task installGitHooks(type: Copy) {
+	description = 'Install Git hooks from .githooks/ directory'
+
+	// Copy all hook files from .githooks/ to .git/hooks/
+	from new File(rootProject.rootDir, '.githooks')
+	into new File(rootProject.rootDir, '.git/hooks')
+	fileMode 0755
+
+	doLast {
+		// Ensure hooks are executable on Unix systems
+		if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
+			def hooksDir = new File(rootProject.rootDir, '.git/hooks')
+			[
+				'pre-commit',
+				'commit-msg',
+				'pre-push'
+			].each { hookName ->
+				def hookFile = new File(hooksDir, hookName)
+				if (hookFile.exists()) {
+					hookFile.setExecutable(true)
+				}
+			}
+		}
+
+		println "✅ Git hooks installed successfully!"
+		println "Hooks installed:"
+		println "  - pre-commit: Format code, run checkstyle, run tests"
+		println "  - commit-msg: Validate conventional commit format"
+		println "  - pre-push: Run tests, build, static analysis, validate branch name"
+	}
+}

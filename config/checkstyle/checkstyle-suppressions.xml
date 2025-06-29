@@ -4,37 +4,23 @@
         "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
-    <!-- Suppress JavaDoc checks for test classes -->
-    <suppress checks="JavadocMethod|JavadocType|JavadocVariable" files=".*Test\.java"/>
-    <suppress checks="JavadocMethod|JavadocType|JavadocVariable" files=".*Tests\.java"/>
-    <suppress checks="JavadocMethod|JavadocType|JavadocVariable" files=".*IT\.java"/>
+    <!-- Suppress FinalLocalVariable for test classes - allows mutable test variables -->
+    <suppress checks="FinalLocalVariable" files=".*Test\.java"/>
+    <suppress checks="FinalLocalVariable" files=".*Tests\.java"/>
+    <suppress checks="FinalLocalVariable" files=".*IT\.java"/>
     
-    <!-- Suppress MagicNumber for test classes -->
-    <suppress checks="MagicNumber" files=".*Test\.java"/>
-    <suppress checks="MagicNumber" files=".*Tests\.java"/>
-    <suppress checks="MagicNumber" files=".*IT\.java"/>
-    
-    <!-- Suppress DesignForExtension for Spring Boot applications -->
-    <suppress checks="DesignForExtension" files=".*Application\.java"/>
-    
-    <!-- Suppress FinalClass for Spring Boot application classes -->
-    <suppress checks="FinalClass" files=".*Application\.java"/>
-    
-    <!-- Suppress HiddenField for DTOs/Entities with builder pattern -->
-    <suppress checks="HiddenField" files=".*Entity\.java"/>
-    <suppress checks="HiddenField" files=".*DTO\.java"/>
-    <suppress checks="HiddenField" files=".*Request\.java"/>
-    <suppress checks="HiddenField" files=".*Response\.java"/>
-    
-    <!-- Suppress FinalParameters for Spring controllers -->
-    <suppress checks="FinalParameters" files=".*Controller\.java"/>
-    <suppress checks="FinalParameters" files=".*RestController\.java"/>
-    
-    <!-- Suppress VisibilityModifier for entities with JPA annotations -->
-    <suppress checks="VisibilityModifier" files=".*Entity\.java"/>
+    <!-- Allow higher complexity for Spring configuration classes -->
+    <suppress checks="CyclomaticComplexity" files=".*Config\.java"/>
+    <suppress checks="CyclomaticComplexity" files=".*Configuration\.java"/>
     
     <!-- Suppress specific checks for generated files -->
     <suppress checks=".*" files=".*[\\/]generated[\\/].*\.java"/>
     <suppress checks=".*" files=".*[\\/]target[\\/].*\.java"/>
     <suppress checks=".*" files=".*[\\/]build[\\/].*\.java"/>
+
+    <!-- Allow descriptive test method names with underscores -->
+    <suppress checks="MethodName" files=".*Test\.java"/>
+    <suppress checks="MethodName" files=".*Tests\.java"/>
+    <suppress checks="MethodName" files=".*IT\.java"/>
+    
 </suppressions> 
