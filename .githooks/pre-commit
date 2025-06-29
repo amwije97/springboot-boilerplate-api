@@ -39,7 +39,7 @@ fi
 
 # STEP 2: Run Checkstyle
 echo -e "${YELLOW}🔍 Step 2: Running Checkstyle...${NC}"
-if ./gradlew checkstyleMain checkstyleTest --quiet; then
+if ./gradlew checkstyleMain checkstyleTest --console=plain --quiet; then
     echo -e "${GREEN}✅ Checkstyle passed${NC}"
 else
     echo -e "${RED}❌ Checkstyle violations found. Please fix the code quality issues.${NC}"
@@ -71,7 +71,7 @@ fi
 
 # STEP 4: Run tests
 echo -e "${YELLOW}🧪 Step 4: Running tests...${NC}"
-if ./gradlew test --quiet --no-daemon; then
+if ./gradlew test --console=plain --quiet --no-daemon; then
     echo -e "${GREEN}✅ All tests passed${NC}"
 else
     echo -e "${RED}❌ Tests failed. Please fix failing tests before committing.${NC}"

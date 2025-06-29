@@ -48,7 +48,7 @@ validate_branch_name
 
 # STEP 2: Clean build and run all tests
 echo -e "${YELLOW}🧪 Step 2: Running clean build and tests...${NC}"
-if ./gradlew clean test --no-daemon --quiet; then
+if ./gradlew clean test --no-daemon --console=plain --quiet; then
     echo -e "${GREEN}✅ All tests passed${NC}"
 else
     echo -e "${RED}❌ Tests failed. Please fix all failing tests before pushing.${NC}"
@@ -57,7 +57,7 @@ fi
 
 # STEP 3: Build the entire project
 echo -e "${YELLOW}🔨 Step 3: Building project...${NC}"
-if ./gradlew build --no-daemon --quiet; then
+if ./gradlew build --no-daemon --console=plain --quiet; then
     echo -e "${GREEN}✅ Build successful${NC}"
 else
     echo -e "${RED}❌ Build failed. Please fix build issues before pushing.${NC}"
@@ -66,7 +66,7 @@ fi
 
 # STEP 4: Run static analysis (checkstyle + any other quality checks)
 echo -e "${YELLOW}🔍 Step 4: Running static analysis...${NC}"
-if ./gradlew check --no-daemon --quiet; then
+if ./gradlew check --no-daemon --console=plain --quiet; then
     echo -e "${GREEN}✅ Static analysis passed${NC}"
 else
     echo -e "${RED}❌ Static analysis checks failed. Please fix quality issues before pushing.${NC}"
