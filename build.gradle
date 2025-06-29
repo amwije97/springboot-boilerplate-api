@@ -66,6 +66,37 @@ checkstyleTest {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	
+	// Configure test logging to show detailed information
+	testLogging {
+		events "started", "passed", "skipped", "failed"
+		exceptionFormat "full"
+		showExceptions true
+		showCauses true
+		showStackTraces true
+		
+		// Show individual test results
+		showStandardStreams = false
+	}
+	
+	// Show test results summary
+	afterSuite { desc, result ->
+		if (!desc.parent) {
+			println "\n=== Test Results ==="
+			println "Tests: ${result.testCount}"
+			println "Passed: ${result.successfulTestCount}"
+			println "Failed: ${result.failedTestCount}"
+			println "Skipped: ${result.skippedTestCount}"
+			println "Duration: ${(result.endTime - result.startTime)/1000}s"
+			
+			if (result.failedTestCount > 0) {
+				println "\n*** SOME TESTS FAILED ***"
+			} else {
+				println "\n*** ALL TESTS PASSED ***"
+			}
+			println "===================="
+		}
+	}
 }
 
 // ========== GIT HOOKS SETUP ==========
