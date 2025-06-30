@@ -37,13 +37,44 @@ Before setting up the project locally, ensure you have the following installed:
 
 ### Setup Instructions
 
-1. **Clone the Repository**
+1. **Create New Repository from Template**
+   
+   Click the **"New"** button at the top of this repository page, then:
+   - Choose a template as "springboot_boilerplate_api" in the Repository template section
+   - Choose a repository name for your new project
+   - Select public or private visibility
+   - Click **"Create repository"**
+   
+   This will create a clean copy without git history.
+
+2. **Clone Your New Repository**
    ```bash
    git clone <your-repository-url>
-   cd springboot-boilerplate-api
+   cd your-new-project-name
    ```
 
-2. **Build and Setup the Project**
+3. **Transform for Your Project** *(Optional - Skip if using as-is)*
+   
+   If you want to customize this boilerplate for your own project:
+   
+   ```bash
+   # 1. Update the configuration variables in the script
+   nano scripts/rename-project.sh
+   
+   # 2. Run the transformation script
+   chmod +x scripts/rename-project.sh
+   ./scripts/rename-project.sh
+   ```
+   
+   The script will automatically:
+   - Update project name and package structure
+   - Rename the main application class
+   - Move all Java files to new package locations
+   - Update all imports and package declarations
+   
+   > 📝 **Note**: Update the variables at the top of `scripts/rename-project.sh` before running.
+
+4. **Build and Setup the Project**
    ```bash
    ./gradlew clean build
    ```
@@ -55,14 +86,14 @@ Before setting up the project locally, ensure you have the following installed:
    - Execute all tests
    - Create the application JAR file
 
-3. **Run the Application**
+5. **Run the Application**
    ```bash
    ./gradlew bootRun
    ```
    
    The application will start on `http://localhost:8080`
 
-4. **Verify the Setup**
+6. **Verify the Setup**
    
    Test the sample endpoint:
    ```bash
@@ -70,6 +101,19 @@ Before setting up the project locally, ensure you have the following installed:
    ```
    
    You should receive a JSON response from the Hello controller.
+
+7. **Clean Up Template Files**
+   
+   Once everything is working, remove the template-specific files:
+   ```bash
+   # Remove the scripts folder (no longer needed)
+   rm -rf scripts/
+   
+   # Update this README for your project
+   # Replace the content with your project's documentation
+   ```
+   
+   > 📝 **Important**: Update this README.md file to document your specific project, API endpoints, and requirements.
 
 ### Development Commands
 
