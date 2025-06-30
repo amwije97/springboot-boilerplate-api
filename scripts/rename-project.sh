@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # ========================================
@@ -41,8 +40,12 @@ find src -name "*.java" -type f | while read file; do
     # Update package declarations in the file
     sed -i "s|package $OLD_PACKAGE|package $NEW_PACKAGE|g" "$file"
     
-    # Update imports in the file
+    # Update imports in the file (including subpackages)
     sed -i "s|import $OLD_PACKAGE|import $NEW_PACKAGE|g" "$file"
+
+    # Update any remaining subpackage imports that weren't caught above
+    # This handles imports like: import com.example.springboot_boilerplate_api.modules.hello.service.HelloService
+    sed -i "s|import ${OLD_PACKAGE}\.|import ${NEW_PACKAGE}.|g" "$file"
     
     # Move file to new location if it's in the old package path
     if [[ $file == *"$OLD_PACKAGE_PATH"* ]]; then
@@ -70,7 +73,26 @@ if [ -f "$NEW_APP_FILE" ]; then
     echo "Main class renamed: $FINAL_APP_FILE"
 fi
 
-# 6. Clean up old package structure (only if new structure exists and has files)
+# 6. Rename test files that match the application class
+OLD_TEST_CLASS="${OLD_CLASS}Tests"
+NEW_TEST_CLASS="${NEW_CLASS}Tests"
+OLD_TEST_FILE="src/test/java/$NEW_PACKAGE_PATH/$OLD_TEST_CLASS.java"
+NEW_TEST_FILE="src/test/java/$NEW_PACKAGE_PATH/$NEW_TEST_CLASS.java"
+
+if [ -f "$OLD_TEST_FILE" ]; then
+    echo "Renaming main test class..."
+    # Update class name in the test file
+    sed -i "s/class $OLD_TEST_CLASS/class $NEW_TEST_CLASS/" "$OLD_TEST_FILE"
+    # Rename the test file
+    mv "$OLD_TEST_FILE" "$NEW_TEST_FILE"
+    echo "Test class renamed: $NEW_TEST_FILE"
+fi
+
+# Update any references to the old application class in all test files
+echo "Updating application class references in test files..."
+find src/test -name "*.java" -type f -exec sed -i "s/$OLD_CLASS/$NEW_CLASS/g" {} \;
+
+# 7. Clean up old package structure (only if new structure exists and has files)
 if [ -d "src/main/java/$NEW_PACKAGE_PATH" ] && [ "$(find "src/main/java/$NEW_PACKAGE_PATH" -name "*.java" | wc -l)" -gt 0 ]; then
     echo "Cleaning up old package structure..."
     rm -rf "src/main/java/com/example/springboot_boilerplate_api"
